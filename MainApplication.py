@@ -8,6 +8,7 @@ from PlotWidget import PlotWidget
 
 
 class MainApplication(tk.Frame):
+    """This class is the main class of the GUI."""
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -38,12 +39,15 @@ class MainApplication(tk.Frame):
         self.combo_vert_divisions.grid(row=2, column=2)
 
     def file_directory(self):
+        """open file type of mp4 for video path"""
         filename = askopenfilename(filetypes=[("Mp4 files", "*.mp4")])
         self.video_path_entry.configure(state="normal")
         self.video_path_entry.insert(0, filename)
         self.video_path_entry.configure(state="disable")
 
     def submit_final(self):
+        """Check the input, pass the args to the detector
+        and call the detector object """
         video_path = self.video_path_entry.get()
         horiz_divisions = int(self.combo_horiz_divisions.get())
         vert_divisions = int(self.combo_vert_divisions.get())
@@ -51,14 +55,18 @@ class MainApplication(tk.Frame):
             messagebox.showinfo('Error', 'Please enter all required data!')
             return
         detector = HandGesturesToData(video_path, horiz_divisions, vert_divisions)
+        # run the detector
         detector()
         print("Finish")
         fig = detector.show_plot_bar()
         self.show_bar_plot(fig)
+        # if csv checkbox is True save the data to csv file
         if self.csv_output:
             detector.save_data_csv()
 
-    def show_bar_plot(self, fig):
+    @staticmethod
+    def show_bar_plot(fig):
+        """This static method show figure of the plot in anew windows """
         new_window = Toplevel(root)
         PlotWidget(new_window, fig)
 
