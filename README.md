@@ -10,9 +10,16 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install all the
 ```bash
 pip install -r requirements.txt
 ```
+## How to use
+   * Chose the video file 
+   * Chose the number of people on the vertically 
+   * Chose the number of people on the horizontally
+   * Click on the check box for csv output of the result
+   * Support only 4 people in video 2*2  
+   ![alt text](https://res.cloudinary.com/dt691hhsa/image/upload/v1608800641/gui_example_j7eqxs.png)
 
 ## Results
-![alt text](https://github.com/matan230g/video-analysis-hand-counter/blob/master/PlotOutput.png)
+![alt text](https://res.cloudinary.com/dt691hhsa/image/upload/v1608800388/PlotOutput_ccstle.png)
 
 
 # Reference
