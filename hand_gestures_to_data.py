@@ -49,6 +49,8 @@ class HandGesturesToData:
         example:
         "output_23_12_2020_11_23_44.csv"
         """
+        if not self.question_df:
+            return
         now = datetime.now()
         current_time = now.strftime("%d_%m_%Y_%H_%M_%S")
         self.question_df.to_csv('output_' + current_time + ".csv")
@@ -175,33 +177,44 @@ class HandGesturesToData:
         else:
             return 0
 
+    def split(self, h, w):
+        """This method get the height and the width of the video frame
+            and return the list of frame coordinates of the each split screen
+            depend of number of tile.
+        """
+        frame_coordinates_list = []
+        seg_h = int(h / self.vert_divisions)  # Tile height
+        seg_w = int(w / self.horiz_divisions)  # Tile width
+        for i in range(self.vert_divisions):
+            for j in range(self.horiz_divisions):
+                # Get the coordinates (top left corner) of the current tile
+                row = i * seg_h
+                col = j * seg_w
+                frame_coordinates_list.append((row, row + seg_h, col, col + seg_w))
+        return frame_coordinates_list
+
     def split_to_divisions(self):
-        """ This method divide each participants web cam input"""
+        """ This method divide each participants web cam input and process the image"""
         cap = cv2.VideoCapture(self.video_path)
         ret, frame = cap.read()
         (h, w, d) = np.shape(frame)
         divisions = self.horiz_divisions * self.vert_divisions  # Total number of tiles
         data = [[] for i in range(divisions)]
-
-        seg_h = int(h / self.vert_divisions)  # Tile height
-        seg_w = int(w / self.horiz_divisions)  # Tile width
+        frame_coordinates = self.split(h, w)
 
         while cap.isOpened():
-
             ret, frame = cap.read()
             if ret:
-                vid = 0  # video counter
-                for i in range(self.vert_divisions):
-                    for j in range(self.horiz_divisions):
-                        # Get the coordinates (top left corner) of the current tile
-                        row = i * seg_h
-                        col = j * seg_w
-                        roi = frame[row:row + seg_h, col:col + seg_w, 0:3]  # Copy the region of interest
-                        number = self.image_processor(roi)
-                        if number is None:
-                            number = 0
-                        data[vid].append(number)
-                        vid += 1
+                for vid_idx in range(divisions):
+                    (row_start, row_end, col_start, col_end) = frame_coordinates[vid_idx]
+                    roi = frame[row_start:row_end, col_start:col_end, 0:3]
+                    if cap.get(cv2.CAP_PROP_POS_FRAMES) == int(cap.get(cv2.CAP_PROP_FRAME_COUNT) * 0.1):
+                        cv2.imwrite("participants " + str(vid_idx + 1) + ".jpg", roi)
+                    number = self.image_processor(roi)
+                    if number is None:
+                        number = 0
+                    data[vid_idx].append(number)
+
             else:
                 break
 
@@ -224,6 +237,8 @@ class HandGesturesToData:
             # if in this frame/timestamp all the participants vote(hand gesture was recognized)
             if all(x > 0 for x in self.df[column]):
                 question_idx.append(int(column))
+        if not question_idx:
+            return
         question_range = []
         # organize the location to range from start the question to the end
         start_idx = question_idx[0]

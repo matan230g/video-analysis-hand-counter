@@ -15,7 +15,7 @@ pip install -r requirements.txt
    * Chose the number of people on the vertically 
    * Chose the number of people on the horizontally
    * Click on the check box for csv output of the result
-   * Support only 4 people in video 2*2  
+   * Support only 2 or 4 people in video   
    ![alt text](https://res.cloudinary.com/dt691hhsa/image/upload/v1608800641/gui_example_j7eqxs.png)
 
 ## Results
