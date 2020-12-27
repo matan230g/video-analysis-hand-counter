@@ -208,6 +208,7 @@ class HandGesturesToData:
                 for vid_idx in range(divisions):
                     (row_start, row_end, col_start, col_end) = frame_coordinates[vid_idx]
                     roi = frame[row_start:row_end, col_start:col_end, 0:3]
+                    # capture the face of the participants at 10% of the video frame
                     if cap.get(cv2.CAP_PROP_POS_FRAMES) == int(cap.get(cv2.CAP_PROP_FRAME_COUNT) * 0.1):
                         cv2.imwrite("participants " + str(vid_idx + 1) + ".jpg", roi)
                     number = self.image_processor(roi)
