@@ -1,6 +1,6 @@
 # Zoom Meetings Video Analysis 
 
-Zoom Mettings Video Analaysis is a Python 3 programe for analysis zoom metting video of hand counter.
+Computer vision Program written in Python with OpenCV for analysis zoom metting video of hand counter. 
 The propse is to ask question of the particepants on zoom metting and to analysis the answer by hand gesture that show in the video 
 
 ## Installation
